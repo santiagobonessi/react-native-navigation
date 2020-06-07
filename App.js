@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, Button, Image } from 'react-native';
 import { createAppContainer, NavigationContext, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
+import { createDrawerNavigator } from 'react-navigation-drawer';
 
 const Logo = () => {
   return (
@@ -20,8 +21,8 @@ const HomeScreen = ({ navigation }) => {
     <View style={styles.container}>
       <Text>Home Screen!</Text>
       <Button
-        title='Go to detail'
-        onPress={() => navigation.navigate('Detail', { name: 'Santiago', user_id: '10' })}
+        title='Open drawer'
+        onPress={() => navigation.openDrawer()}
       ></Button>
     </View>
   );
@@ -29,6 +30,9 @@ const HomeScreen = ({ navigation }) => {
 
 HomeScreen.navigationOptions = {
   title: 'Home',
+  drawerIcon: ({tintColor}) => { 
+  return <Ionicons name='ios-information-circle' size={24} color={tintColor}/> 
+  }, 
   headerLeft: () => <Text> LEFT HEADER </Text>,
   headerTitle: () => <Logo/>,
   headerStyle: {
@@ -59,6 +63,9 @@ const DetailScreen = ({ navigation }) => {
 DetailScreen.navigationOptions = ({ navigation }) => {
   return {
     title: navigation.getParam('title', 'Loading...'),
+    drawerIcon: ({tintColor}) => { 
+      return <Ionicons name='ios-options' size={24} color={tintColor}/> 
+    }, 
     headerRight: () => 
       <Button
       onPress={navigation.getParam('increase')}
@@ -68,7 +75,7 @@ DetailScreen.navigationOptions = ({ navigation }) => {
   }
 }
 
-const AppNavigator = createBottomTabNavigator(
+const AppNavigator = createDrawerNavigator(
   {
     Home: {
       screen: HomeScreen,
@@ -83,29 +90,6 @@ const AppNavigator = createBottomTabNavigator(
   },
   {
     initialRouteName: 'Home',
-    defaultNavigationOptions: ({ navigation }) => ({
-        tabBarIcon: ({ focused, horizontal, tintColor }) => {
-          const {routeName} =  navigation.state; 
-          let iconName
-          if(routeName === 'Home'){
-            iconName = `ios-information-circle${focused ? '' : '-outline'}`;
-          } else {
-            iconName = `ios-options`;
-          }
-          return <Ionicons name={iconName} size={20} tintColor={tintColor}/>
-        },
-        tabBarOptions: {
-          activeTintColor: navigation.state.routeName === 'Home' ? '#e91e63' : 'orange',
-          inactiveTintColor: '#333',
-          labelStyle: {
-            fontSize: 18
-          },
-          style: {
-            backgroundColor: '#fec',
-          }
-        }
-      }
-    )
   }
 )
 
