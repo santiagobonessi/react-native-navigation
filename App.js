@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState, Children} from 'react';
 import { StyleSheet, Text, View, Button, Image } from 'react-native';
 import { createAppContainer, NavigationContext } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -27,17 +27,25 @@ const HomeScreen = ({ navigation }) => {
 
 HomeScreen.navigationOptions = {
   title: 'Main',
-  headerTitle: <Logo/>,
+  headerLeft: () => <Text> LEFT HEADER </Text>,
+  headerTitle: () => <Logo/>,
   headerStyle: {
     backgroundColor: '#333',
   },
 }
 
 const DetailScreen = ({ navigation }) => {
+  const [count, setCount] = useState(0);
+  const increase = () => setCount(count + 1);
+  
+  useEffect(() => {
+    navigation.setParams({ increase })
+  }, [count])
+
   const userName = navigation.getParam('name', 'default value');
   return (
     <View style={styles.container}>
-      <Text>Detail Screen!</Text>
+      <Text>Detail Screen! Count: {count}</Text>
       <Text>User Name: {userName}</Text>
       <Button
         title='USER NAME'
@@ -50,6 +58,12 @@ const DetailScreen = ({ navigation }) => {
 DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
   return {
     title: navigation.getParam('title', 'Loading...'),
+    headerRight: () => 
+      <Button
+      onPress={navigation.getParam('increase')}
+      title={'+ 1'}
+      color={'#ffe'}
+      />,
     headerStyle: {
       backgroundColor: navigationOptions.headerStyle.backgroundColor,
     },
@@ -60,6 +74,10 @@ const AppNavigator = createStackNavigator(
   {
     Home: {
       screen: HomeScreen,
+      navigationOptions: {
+        headerRight: () => 
+        <Text>HEADER RIGHT</Text>
+      }
     },
     Detail: {
       screen: DetailScreen,
@@ -90,7 +108,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   image: {
-    height: 40,
-    width: 40,
-  }
+    height: 35,
+    width: 35,
+  },
 });
