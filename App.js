@@ -1,6 +1,6 @@
 import React, {useEffect, useState, Children} from 'react';
 import { StyleSheet, Text, View, Button, Image } from 'react-native';
-import { createAppContainer, NavigationContext } from 'react-navigation';
+import { createAppContainer, NavigationContext, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
 const Logo = () => {
@@ -46,10 +46,9 @@ const DetailScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text>Detail Screen! Count: {count}</Text>
-      <Text>User Name: {userName}</Text>
       <Button
-        title='USER NAME'
-        onPress={() => navigation.setParams({ title: 'User: Santiago' })}
+        title='Back'
+        onPress={() => navigation.navigate('Modal')}
       ></Button>
     </View>
   );
@@ -98,7 +97,18 @@ const AppNavigator = createStackNavigator(
   }
 )
 
-export default createAppContainer(AppNavigator)
+const RootStack = createStackNavigator(
+  {
+    Main: AppNavigator,
+    Modal: () => <Text>LALALA</Text>
+  },
+  {
+    mode: 'modal',
+    headerMode: 'none'
+  }
+)
+
+export default createAppContainer(RootStack)
 
 const styles = StyleSheet.create({
   container: {
